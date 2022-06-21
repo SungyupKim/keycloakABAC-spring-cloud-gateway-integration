@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Implementation-Title: callme
+Implementation-Version: 2.3.4.RELEASE
+Build-Jdk-Spec: 1.8
+Created-By: Maven Integration for Eclipse
+

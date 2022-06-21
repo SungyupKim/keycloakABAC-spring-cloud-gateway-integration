@@ -1,0 +1,4 @@
+pl\piomin\samples\security\gateway\config\RouteConfig.class
+pl\piomin\samples\security\gateway\GatewayApplication.class
+pl\piomin\samples\security\gateway\config\SecurityConfig.class
+pl\piomin\samples\security\gateway\filters\KeycloakFilterFactory.class

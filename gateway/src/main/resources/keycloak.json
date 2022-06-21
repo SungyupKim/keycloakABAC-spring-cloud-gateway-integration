@@ -1,0 +1,12 @@
+{
+  "realm": "spring-boot-quickstart",
+  "auth-server-url": "http://localhost:8080/auth/",
+  "ssl-required": "none",
+  "resource": "spring-cloud-gateway",
+  "verify-token-audience": false,
+  "credentials": {
+    "secret": "3IvMKnk3AmO2NEmXav4Dy3jEITpIX0pZ"
+  },
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

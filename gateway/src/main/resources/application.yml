@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: gateway
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/token
+            authorization-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/auth
+            userinfo-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+        registration:
+          spring-cloud-gateway:
+            provider: keycloak
+            client-id: spring-cloud-gateway
+            client-secret: 3IvMKnk3AmO2NEmXav4Dy3jEITpIX0pZ
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+
+server.port: 8060
+
+logging.level:
+  org.springframework.cloud.gateway: DEBUG
+  org.springframework.security: DEBUG
+  org.springframework.web.reactive.function.client: TRACE
