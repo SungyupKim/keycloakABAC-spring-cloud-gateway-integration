@@ -6,9 +6,10 @@ spring:
       client:
         provider:
           keycloak:
-            token-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/token
             authorization-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/auth
+            token-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/token
             userinfo-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/userinfo
+            jwk-set-uri: http://localhost:8080/auth/realms/spring-boot-quickstart/protocol/openid-connect/certs
             user-name-attribute: preferred_username
         registration:
           spring-cloud-gateway:
@@ -16,11 +17,12 @@ spring:
             client-id: spring-cloud-gateway
             client-secret: 3IvMKnk3AmO2NEmXav4Dy3jEITpIX0pZ
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+            scope: openid
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
 server.port: 8060
 
 logging.level:
   org.springframework.cloud.gateway: DEBUG
   org.springframework.security: DEBUG
-  org.springframework.web.reactive.function.client: TRACE
+  org.springframework.web.reactive.function.client: TRACE
