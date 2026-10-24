@@ -3,10 +3,12 @@ import { initAuth, keycloak } from './auth'
 import Resources from './pages/Resources'
 import Policies from './pages/Policies'
 import Permissions from './pages/Permissions'
+import Flow from './pages/Flow'
 import Simulator from './pages/Simulator'
 import { Key, LANGS, Lang, useI18n } from './i18n'
 
 const TABS: { id: string; label: Key; view: JSX.Element }[] = [
+  { id: 'flow', label: 'tab.flow', view: <Flow /> },
   { id: 'resources', label: 'tab.resources', view: <Resources /> },
   { id: 'policies', label: 'tab.policies', view: <Policies /> },
   { id: 'permissions', label: 'tab.permissions', view: <Permissions /> },
