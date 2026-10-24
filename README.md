@@ -83,7 +83,7 @@ A UI for managing API paths and authorization policies without opening the Keycl
 
 | Screen | Features |
 |--------|----------|
-| Flow | Visual graph of resource → permission → policy; drag to link, select a line and press Delete to unlink; quick-add resources and permissions |
+| Flow | Do everything on one graph: create / edit / delete resources, permissions and policies (click a node or use the `+ New` buttons), drag to link resource → permission → policy, select a line and press Delete to unlink |
 | API ↔ Resources | Create / edit / delete Keycloak resources from URI patterns and scopes (HTTP methods) |
 | Policies | CRUD for role policies, token-claim regex policies (ABAC), and time-of-day policies |
 | Permissions | Link resources to policies and set the decision strategy |

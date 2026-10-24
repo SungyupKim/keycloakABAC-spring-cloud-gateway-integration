@@ -36,7 +36,6 @@ input, select, textarea { font:inherit; padding:6px 8px; border:1px solid var(--
 
 .flow-toolbar { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
 .flow-toolbar button { margin:0; }
-.flow-heads { display:grid; grid-template-columns:1fr 1fr 1fr; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; padding:0 24px; }
 .flow-canvas { height:560px; border:1px solid var(--line); border-radius:6px; background:var(--card); }
 .flow-node { width:260px; text-align:left; font-size:12px; border-radius:8px; padding:8px 10px; border:1px solid var(--line); background:var(--card); color:var(--fg); }
 .flow-node .sub { color:var(--muted); font-size:11px; word-break:break-all; }
@@ -46,3 +45,16 @@ input, select, textarea { font:inherit; padding:6px 8px; border:1px solid var(--
 .flow-p { border-left:4px solid var(--ok); }
 .flow-p-regex { border-left-color:#f59e0b; }
 .flow-p-time { border-left-color:#14b8a6; }
+
+.flow-layout { display:flex; gap:12px; align-items:stretch; }
+.flow-layout .flow-canvas { flex:1; min-width:0; }
+.flow-panel { position:relative; width:340px; flex:none; max-height:560px; overflow:auto; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:0 16px 16px; }
+.flow-panel .form { border:0; padding:0; max-width:none; }
+.flow-panel .close { position:absolute; top:8px; right:8px; margin:0; padding:0 8px; }
+.flow-panel .delete { margin-top:16px; }
+
+.flow-legend { display:flex; gap:16px; color:var(--muted); font-size:12px; margin-bottom:6px; }
+.flow-legend span::before { content:''; display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+.flow-legend .r::before { background:var(--accent); }
+.flow-legend .m::before { background:#a855f7; }
+.flow-legend .p::before { background:var(--ok); }

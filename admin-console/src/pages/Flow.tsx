@@ -6,7 +6,10 @@ import '@xyflow/react/dist/style.css'
 import { api, Permission, Policy, Resource, Role } from '../api'
 import { useI18n } from '../i18n'
 import { useAction, useLoad } from '../hooks'
-import { Err } from './common'
+import { confirmDelete, Err } from './common'
+import ResourceForm from '../forms/ResourceForm'
+import PolicyForm, { EDITABLE_KINDS } from '../forms/PolicyForm'
+import PermissionForm from '../forms/PermissionForm'
 import { summary } from './Policies'
 
 const COL_X = { r: 0, m: 360, p: 720 }
@@ -15,6 +18,8 @@ const ROW_H = 96
 type Kind = 'r' | 'm' | 'p'
 const kindOf = (id: string) => id[0] as Kind
 const rawId = (id: string) => id.slice(2)
+
+const idOf = (x: Resource | Permission | Policy) => ('_id' in x ? x._id : x.id)
 
 /** Permission 의 resources/policies 를 id 배열로 바꿔 PUT 한다. */
 function toBody(m: Permission, resources: string[], policies: string[]) {
@@ -32,9 +37,8 @@ export default function Flow() {
   const { error, run } = useAction()
   const [flowNodes, setFlowNodes] = useState<Node[]>([])
   const [rf, setRf] = useState<ReactFlowInstance>()
-  const [permName, setPermName] = useState('')
-  const [resName, setResName] = useState('')
-  const [resUri, setResUri] = useState('')
+  // 오른쪽 편집 패널: 새로 만들기(item 없음) 또는 노드 편집
+  const [panel, setPanel] = useState<{ kind: Kind; item?: Resource | Permission | Policy }>()
 
   const reloadAll = () => { res.reload(); perms.reload(); pols.reload() }
 
@@ -91,6 +95,14 @@ export default function Flow() {
     return () => clearTimeout(id)
   }, [rf, hasNodes])
 
+  // 패널이 열리고 닫히면 캔버스 폭이 바뀌므로 다시 맞춘다.
+  const panelOpen = !!panel
+  useEffect(() => {
+    if (!rf) return
+    const id = setTimeout(() => rf.fitView({ padding: 0.1, duration: 200 }), 50)
+    return () => clearTimeout(id)
+  }, [rf, panelOpen])
+
   const onNodesChange = (changes: NodeChange[]) => setFlowNodes(cur => applyNodeChanges(changes, cur))
 
   const valid = (c: Connection | Edge) => {
@@ -127,14 +139,24 @@ export default function Flow() {
     perms.reload()
   }
 
-  const addPermission = async () => {
-    const body = { name: permName, type: 'resource', logic: 'POSITIVE', decisionStrategy: 'UNANIMOUS', resources: [], policies: [] }
-    if (await run(() => api.post('/permissions', body))) { setPermName(''); reloadAll() }
+  const closePanel = () => setPanel(undefined)
+  const saved = () => { closePanel(); reloadAll() }
+
+  const onNodeClick = (_: unknown, node: Node) => {
+    const id = rawId(node.id)
+    const kind = kindOf(node.id)
+    const item = kind === 'r' ? res.data?.find(x => x._id === id)
+      : kind === 'm' ? perms.data?.find(x => x.id === id)
+      : pols.data?.find(x => x.id === id)
+    if (item) setPanel({ kind, item })
   }
 
-  const addResource = async () => {
-    const body = { name: resName, uris: resUri ? [resUri] : [], scopes: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map(name => ({ name })) }
-    if (await run(() => api.post('/resources', body))) { setResName(''); setResUri(''); reloadAll() }
+  const removeItem = async () => {
+    if (!panel?.item) return
+    const { kind, item } = panel
+    if (!confirmDelete(item.name)) return
+    const path = kind === 'r' ? `/resources/${(item as Resource)._id}` : kind === 'm' ? `/permissions/${idOf(item)}` : `/policies/${idOf(item)}`
+    if (await run(() => api.del(path))) saved()
   }
 
   const loadError = res.error ?? perms.error ?? pols.error
@@ -145,21 +167,24 @@ export default function Flow() {
       <p className="muted">{t('flow.desc')}</p>
       <Err msg={loadError ?? error} />
       <div className="flow-toolbar">
-        <input value={resName} onChange={e => setResName(e.target.value)} placeholder={t('flow.newResource')} />
-        <input value={resUri} onChange={e => setResUri(e.target.value)} placeholder={t('flow.newUri')} />
-        <button disabled={!resName} onClick={addResource}>{t('flow.addResource')}</button>
-        <input value={permName} onChange={e => setPermName(e.target.value)} placeholder={t('flow.newPermission')} />
-        <button disabled={!permName} onClick={addPermission}>{t('flow.addPermission')}</button>
+        <button onClick={() => setPanel({ kind: 'r' })}>+ {t('res.new')}</button>
+        <button onClick={() => setPanel({ kind: 'm' })}>+ {t('perm.new')}</button>
+        <button onClick={() => setPanel({ kind: 'p' })}>+ {t('pol.new')}</button>
       </div>
-      <div className="flow-heads">
-        <span>{t('flow.resources')}</span><span>{t('flow.permissions')}</span><span>{t('flow.policies')}</span>
+      <div className="flow-legend">
+        <span className="r">{t('flow.resources')}</span>
+        <span className="m">{t('flow.permissions')}</span>
+        <span className="p">{t('flow.policies')}</span>
       </div>
+      <div className="flow-layout">
       <div className="flow-canvas">
         <ReactFlow
           nodes={flowNodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          onPaneClick={closePanel}
           onEdgesDelete={onEdgesDelete}
           isValidConnection={valid}
           deleteKeyCode={['Delete', 'Backspace']}
@@ -172,6 +197,26 @@ export default function Flow() {
           <Background />
           <Controls showInteractive={false} />
         </ReactFlow>
+      </div>
+      {panel && (
+        <aside className="flow-panel">
+          <button className="close" onClick={closePanel} aria-label={t('close')}>×</button>
+          {panel.kind === 'r' && (
+            <ResourceForm key={(panel.item as Resource | undefined)?._id ?? 'new'} editing={panel.item as Resource | undefined} onSaved={saved} onCancel={closePanel} />
+          )}
+          {panel.kind === 'm' && (
+            <PermissionForm key={panel.item ? idOf(panel.item) : 'new'} editing={panel.item as Permission | undefined}
+              resources={res.data ?? []} policies={pols.data ?? []} onSaved={saved} onCancel={closePanel} />
+          )}
+          {panel.kind === 'p' && (!panel.item || EDITABLE_KINDS.includes((panel.item as Policy).type)) && (
+            <PolicyForm key={panel.item ? idOf(panel.item) : 'new'} editing={panel.item as Policy | undefined} roles={roles.data ?? []} onSaved={saved} onCancel={closePanel} />
+          )}
+          {panel.kind === 'p' && panel.item && !EDITABLE_KINDS.includes((panel.item as Policy).type) && (
+            <><h3>{panel.item.name}</h3><p className="muted">{(panel.item as Policy).type}</p></>
+          )}
+          {panel.item && <button className="danger delete" onClick={removeItem}>{t('delete')}</button>}
+        </aside>
+      )}
       </div>
     </section>
   )
