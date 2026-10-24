@@ -33,3 +33,16 @@ input, select, textarea { font:inherit; padding:6px 8px; border:1px solid var(--
 .badge { margin-left:8px; padding:1px 8px; border-radius:10px; font-size:12px; font-weight:600; }
 .badge.PERMIT { background:color-mix(in srgb, var(--ok) 18%, transparent); color:var(--ok); }
 .badge.DENY { background:color-mix(in srgb, var(--bad) 18%, transparent); color:var(--bad); }
+
+.flow-toolbar { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+.flow-toolbar button { margin:0; }
+.flow-heads { display:grid; grid-template-columns:1fr 1fr 1fr; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; padding:0 24px; }
+.flow-canvas { height:560px; border:1px solid var(--line); border-radius:6px; background:var(--card); }
+.flow-node { width:260px; text-align:left; font-size:12px; border-radius:8px; padding:8px 10px; border:1px solid var(--line); background:var(--card); color:var(--fg); }
+.flow-node .sub { color:var(--muted); font-size:11px; word-break:break-all; }
+.flow-node .warn { color:var(--bad); }
+.flow-r { border-left:4px solid var(--accent); }
+.flow-m { border-left:4px solid #a855f7; }
+.flow-p { border-left:4px solid var(--ok); }
+.flow-p-regex { border-left-color:#f59e0b; }
+.flow-p-time { border-left-color:#14b8a6; }

@@ -8,7 +8,7 @@ type Kind = 'role' | 'regex' | 'time'
 const KIND_LABEL: Record<Kind, Key> = { role: 'pol.kind.role', regex: 'pol.kind.regex', time: 'pol.kind.time' }
 const empty = { name: '', type: 'role' as Kind, logic: 'POSITIVE', roles: [] as string[], targetClaim: '', pattern: '', hour: '', hourEnd: '' }
 
-function summary(p: Policy, roles: Role[], t: typeof translate) {
+export function summary(p: Policy, roles: Role[], t: typeof translate) {
   if (p.type === 'role') return (p.roles ?? []).map(r => roles.find(x => x.id === r.id)?.name ?? r.id).join(', ')
   if (p.type === 'regex') return `${p.targetClaim} =~ ${p.pattern}`
   if (p.type === 'time') return t('pol.hourRange', { from: p.hour ?? '?', to: p.hourEnd ?? '?' })
