@@ -95,6 +95,8 @@ npm install
 npm run dev
 ```
 
+UI 언어는 영어가 기본이며 우측 상단 드롭다운에서 한국어로 전환할 수 있습니다(선택은 브라우저에 저장됩니다).
+
 http://localhost:5173 접속 후 `admin` role을 가진 사용자(`admin1` / `admin1`)로 로그인합니다.
 `admin-console`(public, PKCE)이 로그인하고, `admin-api`는 JWT의 `admin` role을 검사한 뒤 자신의 서비스 계정(`admin-api` client, `realm-management` 권한)으로 Keycloak Admin API를 호출합니다. client secret이 브라우저에 노출되지 않습니다.
 

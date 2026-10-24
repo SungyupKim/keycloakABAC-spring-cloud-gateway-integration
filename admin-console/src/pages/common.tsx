@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { translate, useI18n } from '../i18n'
 
 export function Err({ msg }: { msg?: string }) {
   return msg ? <div className="error">{msg}</div> : null
@@ -9,9 +10,10 @@ export function CheckGroup<T extends string>({ options, value, onChange }: {
   value: T[]
   onChange: (v: T[]) => void
 }) {
+  const { t } = useI18n()
   return (
     <div className="checks">
-      {options.length === 0 && <span className="muted">항목 없음</span>}
+      {options.length === 0 && <span className="muted">{t('noItems')}</span>}
       {options.map(o => (
         <label key={o.value}>
           <input
@@ -31,5 +33,5 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 }
 
 export function confirmDelete(name: string) {
-  return window.confirm(`'${name}' 을(를) 삭제할까요?`)
+  return window.confirm(translate('confirmDelete', { name }))
 }

@@ -185,7 +185,7 @@ public class AdminController {
 		ObjectNode out = mapper.createObjectNode();
 		out.set("matchedResources", matched);
 		if (matched.size() == 0) {
-			out.put("note", "매칭되는 리소스가 없습니다 (Keycloak 정책이 적용되지 않음)");
+			out.put("note", "No resource matches this URI (no Keycloak policy applies)");
 			return out;
 		}
 		JsonNode eval = kc.exchange(HttpMethod.POST, kc.authz("/policy/evaluate"), req);

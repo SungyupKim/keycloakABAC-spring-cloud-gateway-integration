@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { api, Permission, Policy, Resource } from '../api'
 import { useAction, useLoad } from '../hooks'
+import { useI18n } from '../i18n'
 import { CheckGroup, confirmDelete, Err, Field } from './common'
 
 const empty = { name: '', resources: [] as string[], policies: [] as string[], decisionStrategy: 'UNANIMOUS' }
 
 export default function Permissions() {
+  const { t } = useI18n()
   const { data, error, reload } = useLoad(() => api.get<Permission[]>('/permissions'))
   const { data: resources } = useLoad(() => api.get<Resource[]>('/resources'))
   const { data: policies } = useLoad(() => api.get<Policy[]>('/policies'))
@@ -34,11 +36,11 @@ export default function Permissions() {
 
   return (
     <section>
-      <h2>Permission</h2>
-      <p className="muted">리소스에 접근하기 위해 충족해야 하는 정책을 연결합니다. UNANIMOUS 는 모든 정책 통과, AFFIRMATIVE 는 하나만 통과하면 허용입니다.</p>
+      <h2>{t('perm.title')}</h2>
+      <p className="muted">{t('perm.desc')}</p>
       <Err msg={error ?? actionError} />
       <table>
-        <thead><tr><th>이름</th><th>리소스</th><th>정책</th><th>전략</th><th /></tr></thead>
+        <thead><tr><th>{t('name')}</th><th>{t('perm.resources')}</th><th>{t('perm.policies')}</th><th>{t('perm.strategy')}</th><th /></tr></thead>
         <tbody>
           {data?.map(p => (
             <tr key={p.id}>
@@ -47,31 +49,31 @@ export default function Permissions() {
               <td>{p.policies.map(x => x.name).join(', ')}</td>
               <td>{p.decisionStrategy}</td>
               <td className="actions">
-                <button onClick={() => edit(p)}>수정</button>
-                <button className="danger" onClick={() => remove(p)}>삭제</button>
+                <button onClick={() => edit(p)}>{t('edit')}</button>
+                <button className="danger" onClick={() => remove(p)}>{t('delete')}</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <h3>{editing ? `수정: ${editing.name}` : '새 Permission'}</h3>
+      <h3>{editing ? t('editing', { name: editing.name }) : t('perm.new')}</h3>
       <div className="form">
-        <Field label="이름"><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></Field>
-        <Field label="리소스">
+        <Field label={t('name')}><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></Field>
+        <Field label={t('perm.resources')}>
           <CheckGroup options={(resources ?? []).map(r => ({ value: r._id, label: r.name }))} value={form.resources} onChange={v => setForm({ ...form, resources: v })} />
         </Field>
-        <Field label="정책">
+        <Field label={t('perm.policies')}>
           <CheckGroup options={(policies ?? []).map(p => ({ value: p.id, label: `${p.name} (${p.type})` }))} value={form.policies} onChange={v => setForm({ ...form, policies: v })} />
         </Field>
-        <Field label="Decision strategy">
+        <Field label={t('perm.strategyField')}>
           <select value={form.decisionStrategy} onChange={e => setForm({ ...form, decisionStrategy: e.target.value })}>
             <option>UNANIMOUS</option><option>AFFIRMATIVE</option><option>CONSENSUS</option>
           </select>
         </Field>
         <div>
-          <button className="primary" disabled={!form.name || !form.resources.length || !form.policies.length} onClick={save}>{editing ? '저장' : '추가'}</button>
-          {editing && <button onClick={() => edit(undefined)}>취소</button>}
+          <button className="primary" disabled={!form.name || !form.resources.length || !form.policies.length} onClick={save}>{editing ? t('save') : t('add')}</button>
+          {editing && <button onClick={() => edit(undefined)}>{t('cancel')}</button>}
         </div>
       </div>
     </section>
