@@ -42,7 +42,7 @@ public class KeycloakFilterFactory extends AbstractGatewayFilterFactory<Object> 
             keycloakAccessToken = keycloakAccessToken.replaceFirst("Bearer ", "");
             AuthzClient authzClient = AuthzClient.create();
             List<ResourceRepresentation> response =
-                    authzClient.protection(keycloakAccessToken)
+                    authzClient.protection()
                                .resource()
                                .findByMatchingUri(request.getURI().getPath());
 
