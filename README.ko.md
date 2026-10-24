@@ -82,6 +82,7 @@ Keycloak 콘솔에 들어가지 않고도 API 경로와 권한 정책을 관리�
 
 | 화면 | 기능 |
 |------|------|
+| Flow | 리소스 → Permission → 정책을 그래프로 보고, 드래그로 연결하고 선을 선택해 Delete로 해제. 리소스/Permission 빠른 추가 |
 | API ↔ 리소스 | URI 패턴과 scope(HTTP method)를 Keycloak 리소스로 등록/수정/삭제 |
 | 정책 | Role 정책, 토큰 클레임 정규식 정책(ABAC), 시간대 정책 CRUD |
 | Permission | 리소스와 정책을 연결, decision strategy 지정 |

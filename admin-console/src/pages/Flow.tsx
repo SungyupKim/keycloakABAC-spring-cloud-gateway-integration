@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  Background, Connection, Controls, Edge, MarkerType, Node, NodeChange, Position, ReactFlow, applyNodeChanges,
+  Background, Connection, Controls, Edge, MarkerType, Node, NodeChange, Position, ReactFlow, ReactFlowInstance, applyNodeChanges,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { api, Permission, Policy, Resource, Role } from '../api'
@@ -31,6 +31,7 @@ export default function Flow() {
   const roles = useLoad(() => api.get<Role[]>('/roles'))
   const { error, run } = useAction()
   const [flowNodes, setFlowNodes] = useState<Node[]>([])
+  const [rf, setRf] = useState<ReactFlowInstance>()
   const [permName, setPermName] = useState('')
   const [resName, setResName] = useState('')
   const [resUri, setResUri] = useState('')
@@ -81,6 +82,14 @@ export default function Flow() {
       return old ? { ...n, position: old.position, measured: old.measured, width: old.width, height: old.height } : n
     }))
   }, [built])
+
+  // 첫 데이터가 들어온 뒤 한 번 전체가 보이도록 맞춘다.
+  const hasNodes = flowNodes.length > 0
+  useEffect(() => {
+    if (!rf || !hasNodes) return
+    const id = setTimeout(() => rf.fitView({ padding: 0.1 }), 100)
+    return () => clearTimeout(id)
+  }, [rf, hasNodes])
 
   const onNodesChange = (changes: NodeChange[]) => setFlowNodes(cur => applyNodeChanges(changes, cur))
 
@@ -154,7 +163,9 @@ export default function Flow() {
           onEdgesDelete={onEdgesDelete}
           isValidConnection={valid}
           deleteKeyCode={['Delete', 'Backspace']}
-          fitView
+          onInit={setRf}
+          minZoom={0.3}
+          maxZoom={1.2}
           colorMode="system"
           proOptions={{ hideAttribution: true }}
         >
