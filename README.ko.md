@@ -1,4 +1,4 @@
-# keycloak-SCG
+# keycloak-gateway-policy-console
 
 [English](README.md) | **한국어**
 
