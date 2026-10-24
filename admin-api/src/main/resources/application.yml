@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: admin-api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${keycloak.url}/realms/${keycloak.realm}/protocol/openid-connect/certs
+
+server.port: 8070
+
+keycloak:
+  url: http://localhost:8080/auth
+  realm: spring-boot-quickstart
+  issuer: ${keycloak.url}/realms/${keycloak.realm}
+  # 이 API를 호출하는 서비스 계정 (realm-management 권한 필요)
+  client-id: admin-api
+  client-secret: admin-api-dev-secret
+  # 권한(Authorization Services)을 관리할 대상 resource server client
+  target-client-id: spring-cloud-gateway
+  # 콘솔 접근에 필요한 realm role
+  admin-role: admin
+
+admin-console.allowed-origins: http://localhost:5173
