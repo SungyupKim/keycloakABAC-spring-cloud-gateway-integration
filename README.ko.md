@@ -1,9 +1,15 @@
-# keycloak-SCG
+# keycloak-gateway-policy-console
 
 [English](README.md) | **한국어**
 
-Spring Cloud Gateway(SCG)와 Keycloak 인가(Authorization Services)를 연동한 샘플 프로젝트입니다.
-게이트웨이에서 OAuth2 로그인으로 사용자를 인증하고, 요청 URI에 매칭되는 Keycloak 리소스/정책으로 접근 권한을 평가한 뒤 백엔드(`callme`)로 라우팅합니다.
+> Spring Cloud Gateway 환경에서 Keycloak 인가(Authorization Services) 정책을 시각적으로 관리하는 관리 콘솔
+
+게이트웨이의 API를 Keycloak 리소스·Permission·ABAC 정책에 Flow 에디터로 매핑하고, 적용 전에 권한 평가 결과를 시뮬레이션합니다. Keycloak 콘솔을 직접 만질 필요가 없습니다.
+
+- **Flow 에디터** — 리소스 → Permission → 정책을 한 그래프에서 생성·연결·수정
+- **정책 유형** — Role, 토큰 클레임 정규식(ABAC), 시간대 정책
+- **권한 시뮬레이터** — 사용자 + URI + Method 기준으로 정책별 허용/거부 미리보기
+- **참조 게이트웨이** — OAuth2 로그인과 Keycloak 인가 필터를 갖춘 Spring Cloud Gateway 샘플과 백엔드를 포함해 처음부터 끝까지 시험 가능
 
 ## 아키텍처
 

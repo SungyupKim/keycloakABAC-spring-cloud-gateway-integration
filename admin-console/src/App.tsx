@@ -31,7 +31,7 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <h1>Authorization Admin Console</h1>
+        <h1>Keycloak Gateway Policy Console</h1>
         <nav>
           {TABS.map(tab_ => (
             <button key={tab_.id} className={tab_.id === tab ? 'active' : ''} onClick={() => setTab(tab_.id)}>

@@ -1,9 +1,15 @@
-# keycloak-SCG
+# keycloak-gateway-policy-console
 
 **English** | [한국어](README.ko.md)
 
-A sample project integrating Spring Cloud Gateway (SCG) with Keycloak Authorization Services.
-The gateway authenticates users via OAuth2 login, evaluates access against the Keycloak resources and policies that match the request URI, and then routes the request to the backend (`callme`).
+> Visual admin console for managing Keycloak Authorization Services policies on Spring Cloud Gateway.
+
+Map your gateway APIs to Keycloak resources, permissions and ABAC policies in a flow editor, and simulate access decisions before they go live — no need to touch the Keycloak console.
+
+- **Flow editor** — create, link and edit resources → permissions → policies on one graph
+- **Policy types** — role, token-claim regex (ABAC) and time-of-day policies
+- **Policy simulator** — preview allow/deny per policy for a user + URI + method
+- **Reference gateway** — includes a Spring Cloud Gateway sample (OAuth2 login + Keycloak authorization filter) and a backend to try it end to end
 
 ## Architecture
 
