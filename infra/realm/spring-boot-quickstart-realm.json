@@ -5,8 +5,14 @@
   "registrationAllowed": false,
   "roles": {
     "realm": [
-      { "name": "user", "description": "일반 사용자" },
-      { "name": "admin", "description": "관리자" }
+      {
+        "name": "user",
+        "description": "일반 사용자"
+      },
+      {
+        "name": "admin",
+        "description": "관리자"
+      }
     ]
   },
   "users": [
@@ -16,8 +22,16 @@
       "email": "user1@example.com",
       "firstName": "User",
       "lastName": "One",
-      "credentials": [{ "type": "password", "value": "user1", "temporary": false }],
-      "realmRoles": ["user"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user1",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ]
     },
     {
       "username": "admin1",
@@ -25,8 +39,30 @@
       "email": "admin1@example.com",
       "firstName": "Admin",
       "lastName": "One",
-      "credentials": [{ "type": "password", "value": "admin1", "temporary": false }],
-      "realmRoles": ["user", "admin"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin1",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "user",
+        "admin"
+      ]
+    },
+    {
+      "username": "service-account-admin-api",
+      "enabled": true,
+      "serviceAccountClientId": "admin-api",
+      "clientRoles": {
+        "realm-management": [
+          "manage-authorization",
+          "view-clients",
+          "view-users",
+          "view-realm"
+        ]
+      }
     }
   ],
   "clients": [
@@ -41,8 +77,12 @@
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
       "authorizationServicesEnabled": true,
-      "redirectUris": ["http://localhost:8060/*"],
-      "webOrigins": ["http://localhost:8060"],
+      "redirectUris": [
+        "http://localhost:8060/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8060"
+      ],
       "authorizationSettings": {
         "allowRemoteResourceManagement": true,
         "policyEnforcementMode": "ENFORCING",
@@ -52,32 +92,61 @@
             "name": "callme-resource",
             "type": "urn:spring-cloud-gateway:resources:callme",
             "ownerManagedAccess": false,
-            "uris": ["/callme/*"],
-            "scopes": [{ "name": "GET" }, { "name": "POST" }]
+            "uris": [
+              "/callme/*"
+            ],
+            "scopes": [
+              {
+                "name": "GET"
+              },
+              {
+                "name": "POST"
+              }
+            ]
           },
           {
             "name": "other-resource",
             "type": "urn:spring-cloud-gateway:resources:other",
             "ownerManagedAccess": false,
-            "uris": ["/other/*"],
-            "scopes": [{ "name": "GET" }, { "name": "POST" }]
+            "uris": [
+              "/other/*"
+            ],
+            "scopes": [
+              {
+                "name": "GET"
+              },
+              {
+                "name": "POST"
+              }
+            ]
           }
         ],
-        "scopes": [{ "name": "GET" }, { "name": "POST" }],
+        "scopes": [
+          {
+            "name": "GET"
+          },
+          {
+            "name": "POST"
+          }
+        ],
         "policies": [
           {
             "name": "user-role-policy",
             "type": "role",
             "logic": "POSITIVE",
             "decisionStrategy": "UNANIMOUS",
-            "config": { "roles": "[{\"id\":\"user\",\"required\":true}]" }
+            "config": {
+              "roles": "[{\"id\":\"user\",\"required\":true}]"
+            }
           },
           {
             "name": "admin-role-policy",
             "type": "role",
             "logic": "POSITIVE",
             "decisionStrategy": "UNANIMOUS",
-            "config": { "roles": "[{\"id\":\"admin\",\"required\":true}]" }
+            "config": {
+              "roles": "[{\"id\":\"admin\",\"required\":true}]"
+            }
           },
           {
             "name": "callme-permission",
@@ -101,6 +170,35 @@
           }
         ]
       }
+    },
+    {
+      "clientId": "admin-console",
+      "name": "admin-console",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:5173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*"
+      }
+    },
+    {
+      "clientId": "admin-api",
+      "name": "admin-api",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "admin-api-dev-secret",
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true
     }
   ]
 }
